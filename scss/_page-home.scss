@@ -24,8 +24,9 @@
 
   .section-text {
     height: 100%;
-    max-width: 50%;
+    max-width: 55%;
 
+    margin-left: 30px;
     @media (max-width: 768px) {
       max-width: 100%;
     }
@@ -70,9 +71,8 @@
     }
 
     .benefits {
-      margin-top: 30px;
       display: flex;
-      gap: 5px;
+      gap: 8px;
 
       @media (max-width: 768px) {
         flex-direction: column;
@@ -80,11 +80,11 @@
       }
 
       .benefit-item {
-        min-width: 200px;
+        width: 200px !important;
         display: flex;
         flex-direction: column;
-        background: #fff;
-        padding: 0px;
+        background: white;
+        padding: 10px;
         border-radius: 8px;
         box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
 
@@ -95,7 +95,7 @@
         }
 
         span {
-          font-size: 1.4rem;
+          font-size: 1.2rem;
           color: #0b1441;
           font-weight: bold;
         }
@@ -108,10 +108,8 @@
 
 
         img {
-          margin-top: -20px;
-          margin-left: -90px;
-          max-width: 90%;
-          width: auto;
+          width: 120px;
+          height: auto;
           object-fit: contain;
         }
 
@@ -131,8 +129,8 @@
     @include flex(column, center, center);
 
     img {
-
-      width: auto;
+      margin-right: 100px;
+      width: 90%;
       object-fit: contain;
 
 
