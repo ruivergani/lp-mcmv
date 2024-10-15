@@ -1,0 +1,93 @@
+.menu-header {
+    background-color: #0b1441;
+    padding: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      max-height: 12vh;
+    }
+  
+    .logo img {
+
+        height: auto;     
+        max-width: 100%;   
+        width: auto;       
+        object-fit: contain;
+    }
+
+    .menu-nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+  
+      li {
+        a {
+          color: #fff;
+          text-decoration: none;
+          font-size: 16px;
+          position: relative;
+          transition: color 0.3s;
+  
+          &:hover {
+            color: #fa4543;
+          }
+        }
+      }
+    }
+  
+    .menu-right {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+  
+      .btn-compre-online {
+        border: 2px solid #fff;
+        padding: 10px 20px;
+        border-radius: 25px;
+        color: #fff;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.3s;
+  
+        &:hover {
+          background-color: #fff;
+          color: #fa4543;
+        }
+      }
+  
+      .portal {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        
+        i {
+          color: #fa4543;
+          font-size: 18px;
+        }
+  
+        a {
+          color: #fff;
+          text-decoration: none;
+          font-weight: bold;
+          transition: color 0.3s;
+  
+          &:hover {
+            color: #fa4543;
+          }
+        }
+  
+        .phone-number {
+          color: #fff;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+  
