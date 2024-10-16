@@ -1,3 +1,33 @@
+// Swiper Configuration
+const swiper = new Swiper('.section__apartamentos__slide', {
+  slidesPerView: 4,
+  spaceBetween: 32,
+  breakpoints: {
+    // when window width is >= 320px
+    320: {
+      slidesPerView: 1,
+      spaceBetween: 10,
+    },
+    480: {
+      slidesPerView: 2,
+      spaceBetween: 15,
+    },
+    768: {
+      slidesPerView: 3,
+      spaceBetween: 32,
+    },
+    991: {
+      slidesPerView: 4,
+      spaceBetween: 32,
+    }
+  },
+  // Navigation arrows
+  navigation: {
+    nextEl: '.section__apartamentos__slide .swiper-button-next',
+    prevEl: '.section__apartamentos__slide .swiper-button-prev',
+  },
+});
+
 // Header Configuration
 let links = document.querySelectorAll('.js-link');
 let sections = document.querySelectorAll('.section');

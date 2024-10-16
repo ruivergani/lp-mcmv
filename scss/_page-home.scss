@@ -318,3 +318,109 @@
     }
   }
 }
+.section__apartamentos{
+  background-color: var(--primary-background);
+  padding: 60px 0px;
+  position: relative !important;
+  .container{
+    @include flex(column, center, center);
+    .section__apartamentos__title{
+      h3{
+        width: 100%;
+        max-width: 600px;
+        color: var(--primary-blue);
+        text-align: center;
+        font-family: "Roboto", sans-serif;
+        font-size: 32px;
+        font-weight: 500;
+        line-height: 38.4px; /* 120% */
+        letter-spacing: -0.32px;
+        span{
+          color: var(--primary-orange);
+          text-align: center;
+          font-family: "Roboto", sans-serif;
+          font-size: 32px;
+          font-weight: 500;
+          line-height: 38.4px; /* 120% */
+          letter-spacing: -0.32px;
+        }
+      }
+    }
+    .section__apartamentos__slide{
+      margin-top: 60px;
+      width: 100%;
+      .swiper-button-next, .swiper-button-prev{
+        background-color: var(--primary-purple);
+        height: 100%;
+        width: 100%;
+        max-width: 62px !important;
+        max-height: 62px !important;
+        color: var(--white) !important;
+        top: 50%;
+        border: 1px solid var(--primary-purple);
+        transition: all .3s;
+        border-radius: 100%;
+        @media (max-width: 991px){
+          max-width: 42px !important;
+          max-height: 42px !important;
+        }
+        &.swiper-button-disabled{
+          background-color: white;
+          border: 1px solid white;
+          color: var(--primary-purple) !important;
+        }
+        &::after{
+          width: 18px !important;
+          height: 18px !important;
+          font-size: 18px;
+          padding-left: 10px;
+          @media (max-width: 991px){
+            width: 14px !important;
+            height: 14px !important;
+            font-size: 14px;
+          }
+        }
+        &:hover{
+          border: 1px solid var(--primary-purple);
+          background-color: var(--primary-purple);
+          color: var(--white);
+          &::after{
+            color: var(--white);
+          }
+        }
+      }
+      .swiper-wrapper{
+        width: 100%;
+      }
+    }
+    .btn__more{
+      margin-top: 60px;
+      border-radius: 800px;
+      border: 1px solid var(--primary-purple);
+      background-color: var(--primary-purple);
+      padding: 23px 43px;
+      @include flex(row, center, center);
+      color: var(--white);
+      width: 100%;
+      max-width: 290px;
+      gap: 8px;
+      i, p{
+        font-size: 16px;
+      }
+      transition: all .3s;
+      &:hover{
+        background-color: transparent;
+        color: var(--primary-purple);;
+      }
+    }
+  }
+  // Responsive
+  @media (max-width: 991px){
+    padding: 40px 0px;
+    .container{
+      .section__apartamentos__title{
+
+      }
+    }
+  }
+}
