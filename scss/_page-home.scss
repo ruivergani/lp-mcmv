@@ -96,7 +96,8 @@
         @include flex(row, center, center);
         gap: 20px;
         background-color: var(--white);
-        border-radius: 100px;
+        border-top-left-radius: 100px;
+        border-bottom-left-radius: 100px;
         width: 100%;
         max-width: 250px;
         img{
@@ -107,5 +108,7 @@
     }
   }
   // Responsive
-  
+  @media (max-width: 1200px){
+
+  }
 }
