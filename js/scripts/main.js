@@ -6,7 +6,7 @@ const swiper = new Swiper('.section__apartamentos__slide', {
     // when window width is >= 320px
     320: {
       slidesPerView: 1,
-      spaceBetween: 10,
+      spaceBetween: 15,
     },
     480: {
       slidesPerView: 2,

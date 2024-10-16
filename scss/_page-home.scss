@@ -267,7 +267,7 @@
       font-family: "Roboto", sans-serif;
       font-size: 32px;
       font-weight: 500;
-      line-height: 38.4px; /* 120% */
+      line-height: 120%;
       letter-spacing: -0.32px;
       span{
         color: var(--primary-orange);
@@ -275,7 +275,7 @@
         font-family: "Roboto", sans-serif;
         font-size: 32px;
         font-weight: 500;
-        line-height: 38.4px; /* 120% */
+        line-height: 120%;
         letter-spacing: -0.32px;
       }
     }
@@ -307,7 +307,7 @@
       }
     }
   }
-  @media (max-width: 576px){
+  @media (max-width: 375px){
     .container{
       h3{
         font-size: 24px;
@@ -333,7 +333,7 @@
         font-family: "Roboto", sans-serif;
         font-size: 32px;
         font-weight: 500;
-        line-height: 38.4px; /* 120% */
+        line-height: 120%;
         letter-spacing: -0.32px;
         span{
           color: var(--primary-orange);
@@ -341,7 +341,7 @@
           font-family: "Roboto", sans-serif;
           font-size: 32px;
           font-weight: 500;
-          line-height: 38.4px; /* 120% */
+          line-height: 120%;
           letter-spacing: -0.32px;
         }
       }
@@ -356,7 +356,7 @@
         max-width: 62px !important;
         max-height: 62px !important;
         color: var(--white) !important;
-        top: 50%;
+        top: 45%;
         border: 1px solid var(--primary-purple);
         transition: all .3s;
         border-radius: 100%;
@@ -419,7 +419,49 @@
     padding: 40px 0px;
     .container{
       .section__apartamentos__title{
-
+        h3{
+          font-size: 28px;
+          span{
+            font-size: 28px;
+          }
+        }
+      }
+      .section__apartamentos__slide{
+        margin-top: 40px;
+      }
+      .btn__more{
+        margin-top: 40px;
+      }
+    }
+  }
+  @media (max-width: 768px){
+    padding: 30px 0px;
+    .container{
+      .section__apartamentos__title{
+        h3{
+          font-size: 26px;
+          span{
+            font-size: 26px;
+          }
+        }
+      }
+      .section__apartamentos__slide{
+        margin-top: 30px;
+      }
+      .btn__more{
+        margin-top: 30px;
+      }
+    }
+  }
+  @media (max-width: 768px){
+    .container{
+      .section__apartamentos__title{
+        h3{
+          font-size: 24px;
+          span{
+            font-size: 24px;
+          }
+        }
       }
     }
   }
