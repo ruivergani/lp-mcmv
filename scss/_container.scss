@@ -1,12 +1,7 @@
-.container {
+.container{
   width: 100%;
   max-width: 1260px;
+  padding: 0px 15px;
   margin: 0 auto;
-  padding: 0;
-  @include responsive(1400px) {
-    padding: 0 25px;
-  }
-  @include responsive(678px) {
-    padding: 0 15px;
-  }
+  overflow-x: hidden; // no scroll barra lateral x eixo
 }
