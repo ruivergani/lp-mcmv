@@ -27,12 +27,22 @@ const swiper = new Swiper('.section__apartamentos__slide', {
     prevEl: '.section__apartamentos__slide .swiper-button-prev',
   },
 });
-
+// Script for FAQs
+const items = document.querySelectorAll(".accordion button");
+function toggleAccordion() {
+  const itemToggle = this.getAttribute('aria-expanded');
+  for (let i = 0; i < items.length; i++) {
+    items[i].setAttribute('aria-expanded', 'false');
+  }
+  if (itemToggle == 'false') {
+    this.setAttribute('aria-expanded', 'true');
+  }
+}
+items.forEach(item => item.addEventListener('click', toggleAccordion));
 // Header Configuration
 let links = document.querySelectorAll('.js-link');
 let sections = document.querySelectorAll('.section');
 const header = document.getElementById("js-header");
-
 window.addEventListener('scroll', () => {
   sections.forEach(section => {
     let top = window.scrollY;
