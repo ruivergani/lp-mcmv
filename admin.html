@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,9 +55,20 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
+            width: 100%;
             width: 100%;
             text-align: left;
+        }
+
+        .acompanhar-container h2 {
+            position: absolute;
+            top: 0;
+            background-color: white;
+            /* Opcional, para que o fundo fique branco enquanto rola */
+            z-index: 1;
+            /* Mantém o título sobre outros elementos */
+            padding: 10px 0;
+            /* Ajusta o espaçamento para uma aparência melhor */
         }
 
         .form-container.active,
@@ -98,14 +110,112 @@
         .form-group button:hover {
             background-color: #16a085;
         }
+
+        /* Estilo para o spinner de carregamento */
+        .loading-spinner {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #1abc9c;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+
+        .card-container {
+            border: 1px solid red;
+            min-width: 100% !important;
+            display: flex;
+            flex-direction: row;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            margin: 15px;
+            max-width: 270px;
+            min-width: 270px;
+
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .card-body {
+            text-align: center;
+        }
+
+        .card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            color: #34495e;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: #7f8c8d;
+        }
+
+        .card .price {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #16a085;
+            margin-bottom: 10px;
+        }
+
+        .card a {
+            color: #1abc9c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .card a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="sidebar">
         <a href="#" id="cadastrar-imovel">Cadastrar Imóvel</a>
         <a href="#" id="acompanhar-imovel">Acompanhar Imóvel</a>
     </div>
+
+    <!-- Barra de carregamento -->
+    <div id="loading" class="loading-spinner" style="display:none;"></div>
+
 
     <div class="content">
         <!-- Formulário de Cadastro de Imóveis -->
@@ -145,7 +255,7 @@
             <div class="form-container" id="form-container">
                 <!-- Seu formulário de cadastro aqui -->
             </div>
-    
+
             <!-- Seção de Acompanhar Imóveis -->
             <div class="acompanhar-container" id="acompanhar-container">
                 <h2>Acompanhar Imóveis</h2>
@@ -154,12 +264,14 @@
                 </div>
             </div>
         </div>
-    
+
         <!-- Firebase SDK -->
         <script type="module">
             import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-            import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
-    
+            import { getDatabase, ref, onValue, set, get } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+            import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js';
+
+
             // Configuração do Firebase
             const firebaseConfig = {
                 apiKey: "AIzaSyDp7diANPbJHPIlsYLNF94dcQerBw_cLHw",
@@ -170,68 +282,159 @@
                 messagingSenderId: "697421654732",
                 appId: "1:697421654732:web:697c1921e90724a9023069"
             };
-    
+
             // Inicializar Firebase
             const app = initializeApp(firebaseConfig);
             const database = getDatabase(app);
-    
-            // Função para buscar e exibir imóveis
+            const storage = getStorage(app);
+
+            // Função para adicionar imóvel ao Firebase de forma sequencial
+            async function addImovel(imovelData, imagemFile) {
+                const casasRef = ref(database, 'casas');
+                try {
+                    const snapshot = await get(casasRef);
+                    let nextIndex = 0; // Índice inicial se não existirem imóveis
+
+                    if (snapshot.exists()) {
+                        const casasData = snapshot.val();
+                        nextIndex = Object.keys(casasData).length; // Calcula o próximo índice
+                    }
+
+                    // Adiciona o novo imóvel na posição correta no Realtime Database
+                    const newCasaRef = ref(database, `casas/${nextIndex}`);
+                    await set(newCasaRef, imovelData);
+
+                    // Se uma imagem foi selecionada, fazer upload no Firebase Storage
+                    if (imagemFile) {
+                        const storageImageRef = storageRef(storage, `imoveis/${nextIndex}/${imagemFile.name}`);
+                        const uploadSnapshot = await uploadBytes(storageImageRef, imagemFile);
+                        const imageUrl = await getDownloadURL(uploadSnapshot.ref);
+
+                        // Atualizar o imóvel com a URL da imagem
+                        await set(newCasaRef, {
+                            ...imovelData,
+                            imagemUrl: imageUrl // Salvando a URL da imagem corretamente
+                        });
+                    }
+
+                    alert('Imóvel cadastrado com sucesso!');
+                } catch (error) {
+                    console.error('Erro ao adicionar imóvel:', error);
+                }
+            }
+
+            // Manipulação do envio de formulário
+
+            // Manipulação do envio de formulário
+            document.getElementById('submit-btn').addEventListener('click', function (event) {
+                event.preventDefault();
+
+                // Exibe a barra de carregamento
+                document.getElementById('loading').style.display = 'block';
+
+                // Captura dos dados do formulário
+                const residencial = document.getElementById('residencial').value;
+                const bairro = document.getElementById('bairro').value;
+                const quartos = document.getElementById('quartos').value;
+                const preco = document.getElementById('preco').value;
+                const url = document.getElementById('url').value;
+                const imagem = document.getElementById('imagem').files[0]; // Pegando o arquivo de imagem
+
+                if (residencial && bairro && quartos && preco) {
+                    const imovelData = {
+                        residencial,
+                        bairro,
+                        quartos: parseInt(quartos),
+                        preco: parseFloat(preco),
+                        url
+                    };
+
+                    addImovel(imovelData, imagem)
+                        .then(() => {
+                            // Esconde a barra de carregamento após o sucesso
+                            document.getElementById('loading').style.display = 'none';
+                        })
+                        .catch((error) => {
+                            // Esconde a barra de carregamento em caso de erro
+                            document.getElementById('loading').style.display = 'none';
+                            console.error('Erro ao cadastrar imóvel:', error);
+                        });
+                } else {
+                    alert('Preencha todos os campos!');
+                    // Esconde a barra de carregamento se houver erro de validação
+                    document.getElementById('loading').style.display = 'none';
+                }
+            });
+
+
+            // Função para buscar e exibir imóveis cadastrados
             function fetchAndDisplayProperties() {
                 const cardContainer = document.getElementById('card-container');
-                cardContainer.innerHTML = '';  // Limpa o conteúdo antes de exibir novos dados
-    
+                cardContainer.innerHTML = '';  // Limpa o container antes de exibir os imóveis
+
+                // Exibe a barra de carregamento
+                document.getElementById('loading').style.display = 'block';
+
                 const casasRef = ref(database, 'casas');
                 onValue(casasRef, (snapshot) => {
+                    // Esconde a barra de carregamento quando os dados são carregados
+                    document.getElementById('loading').style.display = 'none';
+
                     if (snapshot.exists()) {
                         const data = snapshot.val();
-    
+
                         Object.keys(data).forEach((key) => {
                             const imovel = data[key];
-                            const imagens = imovel.imagens ? Object.values(imovel.imagens) : [];  // Pega as URLs das imagens
-                            const imageUrl = imagens.length > 0 ? imagens[0] : 'default.jpg'; // Pega a primeira imagem ou uma padrão
-    
-                            // Cria o HTML para o card
+                            const imageUrl = imovel.imagemUrl ? imovel.imagemUrl : 'default.jpg'; // Imagem padrão se não houver
+
+                            // Cria o HTML do card do imóvel
                             const cardHtml = `
-                                <div class="card">
-                                    <img src="${imageUrl}" alt="Imagem do Imóvel">
-                                    <div class="card-body">
-                                        <h4>${imovel.residencial}</h4>
-                                        <p>Bairro: ${imovel.bairro}</p>
-                                        <p>Quartos: ${imovel.quartos}</p>
-                                        <p class="price">R$ ${imovel.preco}</p>
-                                        <p>URL: <a href="${imovel.url}" target="_blank">Visitar</a></p>
-                                    </div>
-                                </div>
-                            `;
-    
-                            // Insere o card no container
+                    <div class="card">
+                        <img src="${imageUrl}" alt="Imagem do Imóvel">
+                        <div class="card-body">
+                            <h4>${imovel.residencial}</h4>
+                            <p>Bairro: ${imovel.bairro}</p>
+                            <p>Quartos: ${imovel.quartos}</p>
+                            <p class="price">R$ ${imovel.preco}</p>
+                            <p>URL: <a href="${imovel.url}" target="_blank">Visitar</a></p>
+                        </div>
+                    </div>
+                `;
+
+                            // Adiciona o card ao container
                             cardContainer.innerHTML += cardHtml;
                         });
                     } else {
                         cardContainer.innerHTML = '<p>Nenhum imóvel cadastrado ainda.</p>';
                     }
+                }, (error) => {
+                    // Esconde a barra de carregamento em caso de erro
+                    document.getElementById('loading').style.display = 'none';
+                    console.error('Erro ao carregar imóveis:', error);
                 });
             }
-    
-            // Navegação entre as seções
+
+            // Navegação entre as seções de cadastrar e acompanhar imóveis
             const cadastrarImovelLink = document.getElementById('cadastrar-imovel');
             const acompanharImovelLink = document.getElementById('acompanhar-imovel');
             const formContainer = document.getElementById('form-container');
             const acompanharContainer = document.getElementById('acompanhar-container');
-    
+
             cadastrarImovelLink.addEventListener('click', function (event) {
                 event.preventDefault();
                 formContainer.style.display = 'block';
                 acompanharContainer.style.display = 'none';
             });
-    
+
             acompanharImovelLink.addEventListener('click', function (event) {
                 event.preventDefault();
                 formContainer.style.display = 'none';
                 acompanharContainer.style.display = 'block';
                 fetchAndDisplayProperties();  // Chama a função para exibir os imóveis
             });
-    
+
         </script>
-    </body>
-    </html>
+
+</body>
+
+</html>
