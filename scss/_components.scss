@@ -77,8 +77,26 @@
         }
       }
     }
+
   }
   @media (max-width: 1200px){
 
   }
+
+
+
+  .section__apartamentos__card__button{
+ 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+
+      a{
+        max-width: 50%;
+        font-size: 10x !important;
+      }
+  }
+
+        
 }

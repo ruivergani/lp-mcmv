@@ -126,7 +126,8 @@
             <h2>Minha Casa Minha Vida</h2>
           </div>
           <p>Na Construtora Vital você pode realizar o sonho da compra do seu apartamento, com condições especiais.
-            <strong>Faça agora mesmo uma simulação e mude já de vida!</strong></p>
+            <strong>Faça agora mesmo uma simulação e mude já de vida!</strong>
+          </p>
           <ul>
             <li>
               <i class="ph ph-users"></i>
@@ -380,7 +381,7 @@
     // Importando os módulos do Firebase
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
     import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
-  
+
     const firebaseConfig = {
       apiKey: "AIzaSyDp7diANPbJHPIlsYLNF94dcQerBw_cLHw",
       authDomain: "mcv-vital-construtora.firebaseapp.com",
@@ -389,11 +390,11 @@
       messagingSenderId: "697421654732",
       appId: "1:697421654732:web:697c1921e90724a9023069"
     };
-  
+
     // Inicializar Firebase
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
-  
+
     // Função para criar dinamicamente os cards
     function createApartmentCard(imovel) {
       return `
@@ -419,29 +420,39 @@
               </li>
             </ul>
           </div>
+         
+         
+      <div class="section__apartamentos__card__button" style="display: flex; justify-content: center;">
+  <a href="${imovel.url}" target="_blank" class="btn btn-primary saiba-mais-btn" style="background-color: #532C63; color: white; border-radius: 5px; text-align: center; padding: 12px 30px; width: 50%;">
+    Saiba mais
+  </a>
+</div>
+
+
+
         </div>
       `;
     }
-  
+
     // Função para buscar e exibir os imóveis
     function fetchAndDisplayApartments() {
       const swiperWrapper = document.querySelector('.swiper-wrapper');
-      
+
       // Limpa o swiperWrapper antes de adicionar os cards
-      swiperWrapper.innerHTML = ''; 
-  
+      swiperWrapper.innerHTML = '';
+
       // Referência ao Firebase Realtime Database (nó 'casas')
       const casasRef = ref(database, 'casas');
-  
+
       // Carrega os imóveis
       onValue(casasRef, (snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
-  
+
           // Itera pelos imóveis
           Object.keys(data).forEach((key) => {
             const imovel = data[key];
-  
+
             // Verifica se a URL da imagem existe no imóvel
             if (imovel.imagemUrl) {
               const cardHtml = createApartmentCard(imovel);
@@ -457,11 +468,11 @@
         console.error('Erro ao buscar imóveis:', error);
       });
     }
-  
+
     // Chama a função para buscar e exibir os apartamentos
     fetchAndDisplayApartments();
   </script>
-  
+
 
 
 
