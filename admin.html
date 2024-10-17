@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Imóveis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #2c3e50;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #34495e;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .sidebar a:hover {
+            background-color: #1abc9c;
+        }
+
+        .content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ecf0f1;
+        }
+
+        .form-container,
+        .acompanhar-container {
+            display: none;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .form-container.active,
+        .acompanhar-container.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group input[type="file"] {
+            padding: 8px;
+        }
+
+        .form-group button {
+            padding: 10px 20px;
+            background-color: #1abc9c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-group button:hover {
+            background-color: #16a085;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <a href="#" id="cadastrar-imovel">Cadastrar Imóvel</a>
+        <a href="#" id="acompanhar-imovel">Acompanhar Imóvel</a>
+    </div>
+
+    <div class="content">
+        <!-- Formulário de Cadastro de Imóveis -->
+        <div class="form-container" id="form-container">
+            <h2>Cadastrar Imóvel</h2>
+            <div class="form-group">
+                <label for="residencial">Nome do Residencial:</label>
+                <input type="text" id="residencial" name="residencial">
+            </div>
+            <div class="form-group">
+                <label for="bairro">Bairro:</label>
+                <input type="text" id="bairro" name="bairro">
+            </div>
+            <div class="form-group">
+                <label for="quartos">Quantos quartos:</label>
+                <input type="number" id="quartos" name="quartos" min="1">
+            </div>
+            <div class="form-group">
+                <label for="preco">Preço:</label>
+                <input type="number" id="preco" name="preco" step="0.01">
+            </div>
+            <div class="form-group">
+                <label for="url">Url:</label>
+                <input type="text" id="url" name="url">
+            </div>
+            <div class="form-group">
+                <label for="imagem">Inserir Imagem:</label>
+                <input type="file" id="imagem" name="imagem" accept="image/*" multiple>
+            </div>
+            <div class="form-group">
+                <button id="submit-btn">Enviar</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Formulário de Cadastro de Imóveis -->
+            <div class="form-container" id="form-container">
+                <!-- Seu formulário de cadastro aqui -->
+            </div>
+    
+            <!-- Seção de Acompanhar Imóveis -->
+            <div class="acompanhar-container" id="acompanhar-container">
+                <h2>Acompanhar Imóveis</h2>
+                <div class="card-container" id="card-container">
+                    <!-- Os cards serão inseridos aqui dinamicamente -->
+                </div>
+            </div>
+        </div>
+    
+        <!-- Firebase SDK -->
+        <script type="module">
+            import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+            import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+    
+            // Configuração do Firebase
+            const firebaseConfig = {
+                apiKey: "AIzaSyDp7diANPbJHPIlsYLNF94dcQerBw_cLHw",
+                authDomain: "mcv-vital-construtora.firebaseapp.com",
+                databaseURL: "https://mcv-vital-construtora-default-rtdb.firebaseio.com",
+                projectId: "mcv-vital-construtora",
+                storageBucket: "mcv-vital-construtora.appspot.com",
+                messagingSenderId: "697421654732",
+                appId: "1:697421654732:web:697c1921e90724a9023069"
+            };
+    
+            // Inicializar Firebase
+            const app = initializeApp(firebaseConfig);
+            const database = getDatabase(app);
+    
+            // Função para buscar e exibir imóveis
+            function fetchAndDisplayProperties() {
+                const cardContainer = document.getElementById('card-container');
+                cardContainer.innerHTML = '';  // Limpa o conteúdo antes de exibir novos dados
+    
+                const casasRef = ref(database, 'casas');
+                onValue(casasRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+    
+                        Object.keys(data).forEach((key) => {
+                            const imovel = data[key];
+                            const imagens = imovel.imagens ? Object.values(imovel.imagens) : [];  // Pega as URLs das imagens
+                            const imageUrl = imagens.length > 0 ? imagens[0] : 'default.jpg'; // Pega a primeira imagem ou uma padrão
+    
+                            // Cria o HTML para o card
+                            const cardHtml = `
+                                <div class="card">
+                                    <img src="${imageUrl}" alt="Imagem do Imóvel">
+                                    <div class="card-body">
+                                        <h4>${imovel.residencial}</h4>
+                                        <p>Bairro: ${imovel.bairro}</p>
+                                        <p>Quartos: ${imovel.quartos}</p>
+                                        <p class="price">R$ ${imovel.preco}</p>
+                                        <p>URL: <a href="${imovel.url}" target="_blank">Visitar</a></p>
+                                    </div>
+                                </div>
+                            `;
+    
+                            // Insere o card no container
+                            cardContainer.innerHTML += cardHtml;
+                        });
+                    } else {
+                        cardContainer.innerHTML = '<p>Nenhum imóvel cadastrado ainda.</p>';
+                    }
+                });
+            }
+    
+            // Navegação entre as seções
+            const cadastrarImovelLink = document.getElementById('cadastrar-imovel');
+            const acompanharImovelLink = document.getElementById('acompanhar-imovel');
+            const formContainer = document.getElementById('form-container');
+            const acompanharContainer = document.getElementById('acompanhar-container');
+    
+            cadastrarImovelLink.addEventListener('click', function (event) {
+                event.preventDefault();
+                formContainer.style.display = 'block';
+                acompanharContainer.style.display = 'none';
+            });
+    
+            acompanharImovelLink.addEventListener('click', function (event) {
+                event.preventDefault();
+                formContainer.style.display = 'none';
+                acompanharContainer.style.display = 'block';
+                fetchAndDisplayProperties();  // Chama a função para exibir os imóveis
+            });
+    
+        </script>
+    </body>
+    </html>
