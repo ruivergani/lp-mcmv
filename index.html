@@ -375,12 +375,12 @@
   <script language="javascript" type="text/javascript" src="./js/all.js"></script>
 
 
+
   <script type="module">
     // Importando os módulos do Firebase
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
     import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
-    import { getStorage, ref as storageRef, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js';
-
+  
     const firebaseConfig = {
       apiKey: "AIzaSyDp7diANPbJHPIlsYLNF94dcQerBw_cLHw",
       authDomain: "mcv-vital-construtora.firebaseapp.com",
@@ -389,27 +389,18 @@
       messagingSenderId: "697421654732",
       appId: "1:697421654732:web:697c1921e90724a9023069"
     };
-
+  
     // Inicializar Firebase
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
-    const storage = getStorage(app);
-
+  
     // Função para criar dinamicamente os cards
-    function createApartmentCard(imovel, imageUrl) {
-
-
-      const cardContainer = document.getElementById('swiper-wrapper');
-      cardContainer.innerHTML = '';
-
-      const casasRef = ref(database, 'casas');
-
-      // Criando o card HTML
-      const cardHtml = `
+    function createApartmentCard(imovel) {
+      return `
         <div class="section__apartamentos__card swiper-slide">
           <div class="section__apartamentos__card__image">
             <img src="./assets/logo-square-mcmv.png" alt="Logo MCMV" title="Logo MCMV" class="logo__square__mcmv">
-            <img src="${imageUrl}" alt="Imagem do Imóvel" class="card__image">
+            <img src="${imovel.imagemUrl}" alt="Imagem do Imóvel" class="card__image">
             <div>
               <p>${imovel.status || 'Em Construção'}</p>
             </div>
@@ -430,148 +421,47 @@
           </div>
         </div>
       `;
-      return cardHtml;
     }
-
-
-
-
-
-
-
-
-
-    function fetchAndDisplayProperties() {
-      const cardContainer = document.getElementById('card-container');
-      cardContainer.innerHTML = '';  // Limpa o container antes de exibir os imóveis
-
-      // Exibe a barra de carregamento
-      document.getElementById('loading').style.display = 'block';
-
+  
+    // Função para buscar e exibir os imóveis
+    function fetchAndDisplayApartments() {
+      const swiperWrapper = document.querySelector('.swiper-wrapper');
+      
+      // Limpa o swiperWrapper antes de adicionar os cards
+      swiperWrapper.innerHTML = ''; 
+  
+      // Referência ao Firebase Realtime Database (nó 'casas')
       const casasRef = ref(database, 'casas');
+  
+      // Carrega os imóveis
       onValue(casasRef, (snapshot) => {
-        // Esconde a barra de carregamento quando os dados são carregados
-        document.getElementById('loading').style.display = 'none';
-
         if (snapshot.exists()) {
           const data = snapshot.val();
-
+  
+          // Itera pelos imóveis
           Object.keys(data).forEach((key) => {
             const imovel = data[key];
-            const imageUrl = imovel.imagemUrl ? imovel.imagemUrl : 'item-01.png'; // Imagem padrão se não houver
-
-
-            console.log(imovel); // Verifique se o imóvel está sendo carregado corretamente
-            console.log(imageUrl); // Verifique se a URL da imagem está correta
-
-            // Cria o HTML do card do imóvel
-            const cardHtml = `
-        <div class="section__apartamentos__card swiper-slide">
-          <div class="section__apartamentos__card__image">
-            <img src="./assets/logo-square-mcmv.png" alt="Logo MCMV" title="Logo MCMV" class="logo__square__mcmv">
-            <img src="${imageUrl}" alt="Imagem do Imóvel" class="card__image">
-            <div>
-              <p>${imovel.status || 'Em Construção'}</p>
-            </div>
-          </div>
-          <div class="section__apartamentos__card__text">
-            <h4>${imovel.bairro}</h4>
-            <span>${imovel.residencial}</span>
-            <ul>
-              <li>
-                <i class="ph ph-bed"></i>
-                <p>${imovel.quartos} dorms.</p>
-              </li>
-              <li>
-                <i class="ph ph-currency-circle-dollar"></i>
-                <p>A partir de: R$ ${imovel.preco}</p>
-              </li>
-            </ul>
-          </div>
-        </div>
-      `;
-
-
-            // Adiciona o card ao container
-            cardContainer.innerHTML += cardHtml;
+  
+            // Verifica se a URL da imagem existe no imóvel
+            if (imovel.imagemUrl) {
+              const cardHtml = createApartmentCard(imovel);
+              swiperWrapper.innerHTML += cardHtml;
+            } else {
+              console.warn(`Imóvel ${key} não tem URL de imagem definida.`);
+            }
           });
         } else {
-          cardContainer.innerHTML = '<p>Nenhum imóvel cadastrado ainda.</p>';
+          swiperWrapper.innerHTML = '<p>Nenhum imóvel encontrado.</p>';
         }
       }, (error) => {
-        // Esconde a barra de carregamento em caso de erro
-        document.getElementById('loading').style.display = 'none';
-        console.error('Erro ao carregar imóveis:', error);
+        console.error('Erro ao buscar imóveis:', error);
       });
     }
-
-
-    function fetchAndDisplayApartments() {
-  const swiperWrapper = document.querySelector('.swiper-wrapper');
   
-  // Limpa o swiperWrapper antes de adicionar os cards
-  swiperWrapper.innerHTML = ''; 
-
-  // Referência ao Firebase Realtime Database (nó 'casas')
-  const casasRef = ref(database, 'casas');
-  
-  // Carrega os imóveis
-  onValue(casasRef, (snapshot) => {
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      
-      // Itera pelos imóveis
-      Object.keys(data).forEach((key) => {
-        const imovel = data[key];
-
-
-        const encodedImageName = encodeURIComponent(imovel.imagemNome);
-const imageRef = storageRef(storage, `imoveis/${key}/${encodedImageName}`);
-
-        
-        // Verifica se o imóvel tem uma imagem nome definida
-        if (imovel.imagemNome) {
-          const imageRef = storageRef(storage, `imoveis/${key}/${imovel.imagemNome}`);
-
-
-       
-
-// After constructing the imageRef
-console.log('Image Reference Path:', imageRef.fullPath);
-          
-          // Tenta obter a URL da imagem no Firebase Storage
-          getDownloadURL(imageRef)
-            .then((url) => {
-              const cardHtml = createApartmentCard(imovel, url);
-              swiperWrapper.innerHTML += cardHtml;
-            })
-            .catch((error) => {
-              console.error('Erro ao carregar imagem:', error);
-              // Caso haja um erro, use uma imagem padrão
-              const cardHtml = createApartmentCard(imovel, './assets/item-01.png');
-              swiperWrapper.innerHTML += cardHtml;
-            });
-        } else {
-          // Caso o imóvel não tenha uma imagem definida, use uma imagem padrão
-          const cardHtml = createApartmentCard(imovel, './assets/item-01.png');
-          swiperWrapper.innerHTML += cardHtml;
-        }
-      });
-    } else {
-      swiperWrapper.innerHTML = '<p>Nenhum imóvel encontrado.</p>';
-    }
-  }, (error) => {
-    console.error('Erro ao buscar imóveis:', error);
-  });
-}
-
-
-
     // Chama a função para buscar e exibir os apartamentos
     fetchAndDisplayApartments();
   </script>
-
-
+  
 
 
 
