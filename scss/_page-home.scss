@@ -89,9 +89,9 @@
       @include flex(row, flex-end, flex-start);
       .women__image{
         position: absolute;
-        top: 4px;
-        right: -38px;
-        max-width: 450px;
+        top: -26px;
+        right: 134px;
+        max-width: 252px;
       }
       .section__hero__image__box{
         margin-left: -90px;
@@ -193,7 +193,7 @@
         }
         .women__image{
           position: relative;
-          max-width: 300px;
+          max-width: 170px;
           left: 0;
           right: 0;
           top: 0;
@@ -602,10 +602,10 @@
       }
       .section__faqs__body__image{
         width: 100%;
-        max-width: 380px;
+        max-width: 250px;
         img{
           width: 100%;
-          max-width: 380px;
+          max-width: 250px;
         }
       }
     }
