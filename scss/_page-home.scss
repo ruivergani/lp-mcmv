@@ -854,4 +854,8 @@
   &:hover{
     background-color: #075e54;
   }
+  @media (max-width: 768px){
+    bottom: 20px;
+    right: 10px;
+  }
 }
