@@ -834,3 +834,24 @@
     }
   }
 }
+.whatsapp-button{
+  padding: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color:#25d366;
+  background-size: 60%;
+  overflow: hidden;
+  @include flex(row, center, center);
+  transition: all .3s;
+  position: fixed;
+  bottom: 50px;
+  right: 30px;
+  i{
+    font-size: 24px;
+    color: white;
+  }
+  &:hover{
+    background-color: #075e54;
+  }
+}
