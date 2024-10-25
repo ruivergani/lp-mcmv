@@ -426,6 +426,9 @@
       
       .swiper-wrapper {
         width: 100%;
+        display: flex  !important;
+        align-items: center !important;
+        justify-content: center;
       }
     }
     
@@ -502,6 +505,8 @@
       
       .section__apartamentos__slide {
         margin-top: 40px;
+
+    
       }
       
       .btn__more {
