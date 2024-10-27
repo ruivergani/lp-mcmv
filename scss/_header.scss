@@ -79,10 +79,17 @@ header{
           font-weight: 700;
           line-height: 21px;
           letter-spacing: -0.32px;
-          i{
-            color: var(--primary-orange);
-            margin-right: 6px;
+          a{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            i{
+              color: var(--primary-orange);
+              margin-right: 6px;
+            }
           }
+         
         }
         a{
           @include flex(row, center, center);

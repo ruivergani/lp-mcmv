@@ -21,17 +21,16 @@
       h1{
         color: var(--primary-blue);
         font-family: "Roboto", sans-serif;
-        font-size: 40px;
+        font-size: 45px;
         font-weight: 500;
         line-height: 40px;
         letter-spacing: -0.32px;
-        margin-top: -20px;
+        margin-top: 12px;
+        margin-left: -8px;
       }
 
-
-
       div{
-        margin-top: 36px;
+        margin-top: 10px;
         background-color: var(--white);
         padding: 12px 0px;
        
@@ -50,13 +49,14 @@
           font-weight: 500;
           line-height: 40px;
           letter-spacing: -0.32px;
+          margin-left: 40px;
           text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); 
 
         }
         
       }
       p{
-        margin-top: 7px;
+        margin-top: 15px;
         width: 100%;
         max-width: 450px;
         color: var(--primary-blue);
@@ -65,15 +65,14 @@
         font-weight: 400;
         line-height: 24px;
         letter-spacing: -0.32px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
         strong{
           font-weight: 700;
         }
       }
       ul{
-     margin-top: 80px;
+        margin-top: 80px;
         @include flex(row, center, flex-start);
-        gap: 42px;
+        gap: 30px;
         li{
           @include flex(column, flex-start, flex-start);
           background-color: white;
@@ -133,21 +132,31 @@
   // Responsive
   @media (max-width: 1200px){
     &::before{
-      top: 21.1%;
+      top: 24.1%;
     }
     .container{
       padding: 60px 15px;
       overflow: hidden;
       .section__hero__text{
+        h1,
+        .p-text{
+          margin-left: 30px;
+        }
         div{
           max-width: 100%;
         }
         ul{
+          margin-top: 60px;
           gap: 20px;
           @include flex(row, flex-start, flex-start);
           li{
             width: 100%;
-            max-width: 180px;
+            min-width: 200px !important;
+            max-width: 200px !important;
+            p,
+            span{
+              font-size: 16px;
+            }
           }
         }
       }
@@ -160,16 +169,20 @@
       }
     }
   }
-  @media (max-width: 1050px){
+ @media (max-width: 1050px){
     &::before{
-      top: 17.1%;
+      top: 19.1%;
     }
     .container{
       .section__hero__text{
+        div{
+          left: 0;
+        }
         ul{
           display: grid;
           grid-template-columns: 1fr 1fr;
           grid-gap: 20px;
+          
         }
       }
     }
@@ -186,15 +199,26 @@
       .section__hero__text{
         @include flex(column, center, center);
         text-align: center;
+        h1,
+        .p-text{
+          margin-left: 0;
+        }
+        
         div{
           border-radius: 100px;
           padding: 12px 20px;
+          h2{
+            margin-left: 0;
+          }
         }
         ul{
           margin-top: 30px;
           grid-template-columns: 1fr;
           li{
             max-width: 100%;
+            padding: px;
+            min-width: 250px !important;
+            max-width: 250px !important;
             @include flex(column, center, center);
             p{
               margin-top: 12px;
@@ -339,7 +363,6 @@
     }
   }
 }
-
 
 .section__apartamentos {
   background-color: var(--primary-background);
@@ -506,7 +529,12 @@
       .section__apartamentos__slide {
         margin-top: 40px;
 
+        .swiper-wrapper {
+          align-items: initial !important;
+          justify-content: initial !important;
+        }
     
+
       }
       
       .btn__more {
@@ -531,6 +559,14 @@
       
       .section__apartamentos__slide {
         margin-top: 30px;
+            
+        .swiper-wrapper {
+          width: 100%;
+          gap:25px;
+          .section__apartamentos__card {
+            margin-left: 25px;
+          }
+      }
       }
       
       .btn__more {
@@ -553,8 +589,6 @@
     }
   }
 }
-
-
 
 .section__faqs{
   padding: 60px 0px;
@@ -767,6 +801,7 @@
     }
   }
 }
+
 .section__support{
   padding-bottom: 80px;
   .container{
@@ -924,6 +959,7 @@
     }
   }
 }
+
 .whatsapp-button{
   padding: 30px;
   width: 60px;
